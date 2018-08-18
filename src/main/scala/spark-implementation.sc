@@ -1,6 +1,7 @@
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types._
+
 /**
   * Spark Session example
   *
@@ -56,4 +57,16 @@ my_cols.agg(min(col("month")), max(col("month"))).show()
 
 val filtered = my_cols.filter(col("month") > 6 && col("carrier") =!= "AA")
 filtered.show()
+
+/*
+dplyr::arrange
+sort multi columns ascending and descending the same time
+ */
+
+val sorted = filtered.sort(asc("day"), desc("carrier"))
+sorted.show()
+
+/*
+dplyr::mutate
+ */
 
