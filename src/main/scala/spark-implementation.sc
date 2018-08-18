@@ -1,5 +1,6 @@
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions._
+import org.apache.spark.sql.types._
 /**
   * Spark Session example
   *
@@ -34,12 +35,17 @@ printSchema()
 multi_cols.printSchema()
 
 /*
-convert type, from string to numeric
- */
+convert type, from string to numeric with condition
+*/
 
-val reformat_cols = multi_cols.select(multi_cols.columns.map(c => col(c).cast("Integer")):_*)
+val cols_converted = multi_cols.columns.map(x => {
+  if (!x.contains("carrier")) col(x).cast(IntegerType)
+  else col(x)
+})
+
+val my_cols = multi_cols.select(cols_converted:_*)
+my_cols.show()
+
 /*
-  dplyr::filter
+ dplyr::filter
  */
-
-reformat_cols.printSchema()
