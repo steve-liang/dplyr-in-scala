@@ -24,14 +24,12 @@ df.show()
 
   */
 val multi_cols = df.select(Seq("year", "month", "day", "carrier").map(c => col(c)): _*)
-
 multi_cols.show()
 
 /*
 Let's first see all the column types, equivalent to R's str()
 printSchema()
  */
-
 multi_cols.printSchema()
 
 /*
@@ -47,5 +45,15 @@ val my_cols = multi_cols.select(cols_converted:_*)
 my_cols.show()
 
 /*
- dplyr::filter
+see the range of "month" column
  */
+my_cols.agg(min(col("month")), max(col("month"))).show()
+
+/*
+ dplyr::filter
+ only month > 6 and carrier != "AA"
+ */
+
+val filtered = my_cols.filter(col("month") > 6 && col("carrier") =!= "AA")
+filtered.show()
+
