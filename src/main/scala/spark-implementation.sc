@@ -12,11 +12,21 @@ val sparkSession = SparkSession.builder
   .appName("spark session example")
   .getOrCreate()
 
+/*
+necessary for $ syntax, etc
+ */
+import sparkSession.implicits._
+
 val df = sparkSession.read
   .option("header", "true")
   .csv("src/main/data/flights.csv")
 
 df.show()
+
+/*
+r summary()
+ */
+df.describe().show()
 
 /*
  dplyr::select
@@ -64,9 +74,16 @@ sort multi columns ascending and descending the same time
  */
 
 val sorted = filtered.sort(asc("day"), desc("carrier"))
-sorted.show()
+
+// equivalently
+val sorted_2 = filtered.orderBy($"day".asc, $"carrier".desc)
 
 /*
 dplyr::mutate
+here I mutate one column with user defined functions: convert mm to short month string (3 -> Mar)
  */
-
+import java.text.DateFormatSymbols
+val to_month_string: (Int => String) = (arg: Int) => {new DateFormatSymbols().getShortMonths()(arg-1)}
+val sqlfunc = udf(to_month_string)
+val mm_to_string = my_cols.withColumn("month", sqlfunc(col("month")))
+mm_to_string.show()
