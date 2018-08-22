@@ -105,3 +105,22 @@ mm_to_string.show()
 
 val summary = mm_to_string.groupBy($"carrier").count().orderBy($"count".desc)
 summary.show()
+
+/**
+  * dplyr::slice
+  * select row by index
+  * spark is distributed, there's no direct way to get row by index
+  */
+
+/**
+  * dplyr::rename
+  * DataFrame.withColumnRenamed
+  */
+
+val dfNewName = summary.withColumnRenamed("carrier", "Carrier")
+dfNewName.printSchema()
+
+// replace multiple names using a Seq
+val newNames = Seq("Carrier", "Count")
+val dfNewNames = summary.toDF(newNames: _*)
+dfNewNames.printSchema()
