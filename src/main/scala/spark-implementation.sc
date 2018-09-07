@@ -124,3 +124,17 @@ dfNewName.printSchema()
 val newNames = Seq("Carrier", "Count")
 val dfNewNames = summary.toDF(newNames: _*)
 dfNewNames.printSchema()
+
+/**
+  * JOIN:
+  * dplyr::left_join
+  */
+
+val originTable = df.select(Seq("carrier", "origin").map(c => col(c)): _*).as("origin")
+val destTable = df.select(Seq("carrier", "dest").map(c => col(c)): _*).as("dest")
+
+val left_joined = originTable.join(destTable,
+  col("origin.carrier") === col("dest.carrier"),
+  "inner")
+left_joined.take(10)
+left_joined.select(col("origin.carrier"), col("origin.origin"), col("dest.dest")).show()
